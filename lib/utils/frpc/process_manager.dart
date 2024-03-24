@@ -7,6 +7,7 @@ import 'package:nyalcf/controllers/frpc_controller.dart';
 import 'package:nyalcf/storages/configurations/proxies_configuration_storage.dart';
 import 'package:nyalcf/storages/stores/frpc_storage.dart';
 import 'package:nyalcf/utils/logger.dart';
+import 'package:nyalcf/utils/path_provider.dart';
 
 class FrpcProcessManager {
   final fss = FrpcStorage();
@@ -38,11 +39,22 @@ class FrpcProcessManager {
       ];
     }
 
-    final Process process = await Process.start(
-      frpcPath,
-      arguments,
-      workingDirectory: await fss.getRunPath(),
-    );
+    final Process process;
+    if (Platform.isAndroid) {
+      Logger.debug(frpcPath);
+      List<String> androidArguments = ['${PathProvider.appSupportPath}/frpc_injector', frpcPath, frpToken, proxyId.toString()];
+      process = await Process.start(
+        '/system/bin/linker64',
+        androidArguments,
+        workingDirectory: await fss.getRunPath(),
+      );
+    } else {
+      process = await Process.start(
+        frpcPath,
+        arguments,
+        workingDirectory: await fss.getRunPath(),
+      );
+    }
     pMap['process'] = process;
     pMap['proxy_id'] = proxyId;
     cctr.addProcess(pMap);

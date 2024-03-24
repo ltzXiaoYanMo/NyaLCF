@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,7 +25,7 @@ import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
+  if (!Platform.isAndroid) await windowManager.ensureInitialized();
 
   await Universe.loadUniverse();
 
@@ -38,6 +40,11 @@ void main() async {
 
   runApp(const App());
 
+  if (Platform.isAndroid) {
+    final res = await Process.run('/system/bin/linker64', []);
+    Logger.debug(res.stdout);
+    Logger.debug(res.stderr);
+  }
   doWhenWindowReady(MainWindow.doWhenWindowReady);
 }
 
@@ -84,7 +91,7 @@ class _AppState extends State<App> with WindowListener, TrayListener {
   }
 
   Future<void> _init() async {
-    await windowManager.setPreventClose(true);
+    if (!Platform.isAndroid) await windowManager.setPreventClose(true);
     setState(() {});
   }
 

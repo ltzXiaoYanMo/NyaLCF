@@ -154,8 +154,8 @@ class FrpcSettingController extends GetxController {
       ]);
     }
 
-    /// Platform = Linux
-    if (Platform.isLinux) {
+    /// Platform = Linux/Android
+    if (Platform.isLinux || Platform.isAndroid) {
       platform = 'linux';
       Logger.info('Build linux platform arch list');
       arch.addAll([

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,6 +17,7 @@ class AppbarActionsX {
   final List<Widget> append;
 
   List<Widget> _list() {
+    if (Platform.isAndroid) return <Widget>[];
     return <Widget>[
       /// 移动窗口
       WindowTitleBarBox(

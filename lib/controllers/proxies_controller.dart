@@ -67,7 +67,7 @@ class ProxiesController extends GetxController {
       list.add(
         SizedBox(
           width: 380,
-          height: 200,
+          height: 205,
           child: Card(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

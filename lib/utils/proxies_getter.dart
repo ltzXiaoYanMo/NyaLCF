@@ -11,19 +11,23 @@ class ProxiesGetter {
     Logger.info('Auto updating proxies list...');
     final UserController uctr = Get.find();
 
-    final List<ProxyInfoModel> result =
-        await ProxiesGetDio().get(uctr.user, uctr.token);
-    ProxiesStorage.clear();
-    ProxiesStorage.addAll(result);
     try {
-      final ProxiesController pctr = Get.find();
-      pctr.load(uctr.user, uctr.token);
+      final List<ProxyInfoModel> result =
+      await ProxiesGetDio().get(uctr.user, uctr.token);
+      ProxiesStorage.clear();
+      ProxiesStorage.addAll(result);
+      try {
+        final ProxiesController pctr = Get.find();
+        pctr.load(uctr.user, uctr.token);
+      } catch (e) {
+        Logger.info(
+            'Can not update proxies list widgets, maybe it is not serialized yet.');
+      }
+      Future.delayed(const Duration(minutes: 5), () {
+        startUp();
+      });
     } catch (e) {
-      Logger.info(
-          'Can not update proxies list widgets, maybe it is not serialized yet.');
+      Logger.warn('Get proxies list failed: $e');
     }
-    Future.delayed(const Duration(minutes: 5), () {
-      startUp();
-    });
   }
 }
